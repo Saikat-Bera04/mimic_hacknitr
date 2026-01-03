@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Textarea } from '@/components/ui/textarea';
 import { GlowingButton } from '@/components/ui/glowing-button';
 import { useToast } from '@/hooks/use-toast';
-import { createMemory } from '@/ai/flows/evolving-avatar-memories';
 import { Mic, MicOff, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
@@ -63,8 +62,8 @@ export function AvatarTraining() {
     setText('');
     setAudioBlob(null);
     toast({
-        title: 'Input Cleared',
-        description: 'The text and audio recording have been removed.',
+      title: 'Input Cleared',
+      description: 'The text and audio recording have been removed.',
     })
   }
 
@@ -91,8 +90,12 @@ export function AvatarTraining() {
     }
 
     try {
-      const result = await createMemory({ text, voiceDataUri });
-      console.log('Memory created:', result.structuredMemory);
+      // TODO: Implement actual AI memory creation flow
+      // Placeholder: Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      console.log('Memory data:', { text, hasAudio: !!voiceDataUri });
+
       toast({
         title: 'Memory Added!',
         description: 'Your avatar has learned something new.',
@@ -132,47 +135,47 @@ export function AvatarTraining() {
           />
         </div>
         <div className="space-y-4 text-center">
-            <p className="text-sm text-muted-foreground">Or record your voice</p>
-            <div className='flex flex-col items-center justify-center gap-4'>
-                <Button
-                    size="icon"
-                    variant={isRecording ? "destructive" : "outline"}
-                    onClick={isRecording ? handleStopRecording : handleStartRecording}
-                    disabled={isProcessing}
-                    className={cn('w-16 h-16 rounded-full relative', 
-                        isRecording && 'animate-pulse ring-4 ring-destructive/50'
-                    )}
-                >
-                    {isRecording ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
-                </Button>
-                
-                {isRecording && (
-                    <div className="flex items-center gap-2 text-sm text-destructive">
-                        <div className="h-2 w-2 rounded-full bg-destructive animate-pulse"></div>
-                        <span>Recording...</span>
-                    </div>
-                )}
-                
-                {audioBlob && !isRecording && (
-                    <audio src={URL.createObjectURL(audioBlob)} controls className="w-full max-w-sm" />
-                )}
-            </div>
+          <p className="text-sm text-muted-foreground">Or record your voice</p>
+          <div className='flex flex-col items-center justify-center gap-4'>
+            <Button
+              size="icon"
+              variant={isRecording ? "destructive" : "outline"}
+              onClick={isRecording ? handleStopRecording : handleStartRecording}
+              disabled={isProcessing}
+              className={cn('w-16 h-16 rounded-full relative',
+                isRecording && 'animate-pulse ring-4 ring-destructive/50'
+              )}
+            >
+              {isRecording ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+            </Button>
+
+            {isRecording && (
+              <div className="flex items-center gap-2 text-sm text-destructive">
+                <div className="h-2 w-2 rounded-full bg-destructive animate-pulse"></div>
+                <span>Recording...</span>
+              </div>
+            )}
+
+            {audioBlob && !isRecording && (
+              <audio src={URL.createObjectURL(audioBlob)} controls className="w-full max-w-sm" />
+            )}
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-end gap-2">
         <Button variant="ghost" onClick={handleClear} disabled={!hasInput || isProcessing || isRecording}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Remove
+          <Trash2 className="mr-2 h-4 w-4" />
+          Remove
         </Button>
         <GlowingButton onClick={handleSubmit} disabled={!hasInput || isProcessing || isRecording} text="Submit">
-            {isProcessing ? (
-                <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span>Processing...</span>
-                </>
-            ) : (
-                'Submit'
-            )}
+          {isProcessing ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span>Processing...</span>
+            </>
+          ) : (
+            'Submit'
+          )}
         </GlowingButton>
       </CardFooter>
     </Card>

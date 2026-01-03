@@ -8,9 +8,9 @@ import { GlowingButton } from "@/components/ui/glowing-button";
 export default function SignInPage() {
   return (
     <div className="w-full max-w-md">
-      <Card className="mx-auto max-w-sm bg-background/80 border-border/60">
+      <Card className="mx-auto max-w-sm bg-neutral-900/90 border-border/60">
         <CardHeader className="text-center">
-            <div className="flex justify-center mb-4"><Logo /></div>
+          <div className="flex justify-center mb-4"><Logo /></div>
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
           <CardDescription>Enter your credentials to access your EvoAvatar.</CardDescription>
         </CardHeader>

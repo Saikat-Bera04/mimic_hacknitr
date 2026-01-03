@@ -35,8 +35,10 @@ export default function DashboardLayout({
           isMobileNavOpen && isMobile && "blur-sm"
         )}>
           <DashboardHeader onMobileMenuClick={() => setIsMobileNavOpen(true)} />
-          <main className="flex-1 overflow-y-auto p-4 md:p-6">
-            {children}
+          <main className="flex-1 overflow-y-auto p-6 md:p-8">
+            <div className="mx-auto max-w-7xl w-full min-h-full">
+              {children}
+            </div>
           </main>
         </div>
       </div>

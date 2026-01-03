@@ -13,7 +13,7 @@ const viewMap: { [key: string]: { title: string; icon: React.ReactElement } } = 
   "train-avatar": { title: "Train Avatar", icon: <BrainCircuit className="h-5 w-5" /> },
   docs: { title: "Documentation", icon: <FileText className="h-5 w-5" /> },
   "create-avatar": { title: "Create Avatar", icon: <Sparkles className="h-5 w-5" /> },
-  "invite": { title: "Invite Participant", icon: <UserPlus className="h-5 w--5" /> },
+  "invite": { title: "Invite Participant", icon: <UserPlus className="h-5 w-5" /> },
   profile: { title: "User Profile", icon: <User className="h-5 w-5" /> },
 };
 
@@ -45,7 +45,7 @@ export function DashboardHeader({ onMobileMenuClick }: DashboardHeaderProps) {
           <Menu className="h-5 w-5" />
         </Button>
         <div className="text-primary hidden md:block">{currentView.icon}</div>
-        <h1 className="text-md font-semibold text-foreground" style={{color: 'var(--dynamic-text-color)'}}>
+        <h1 className="text-md font-semibold text-foreground" style={{ color: 'var(--dynamic-text-color)' }}>
           {currentView.title}
         </h1>
       </div>

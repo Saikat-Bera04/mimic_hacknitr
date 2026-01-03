@@ -13,7 +13,7 @@ import { AvatarTraining } from './AvatarTraining';
 export function DashboardPageContent() {
   const searchParams = useSearchParams();
   const view = searchParams.get('view');
-  
+
   const renderView = () => {
     switch (view) {
       case "train-avatar":
@@ -31,7 +31,7 @@ export function DashboardPageContent() {
     }
   };
 
-  return <div className="w-full h-full">{renderView()}</div>;
+  return <div className="w-full h-full flex items-start justify-center">{renderView()}</div>;
 }
 
-    
+
