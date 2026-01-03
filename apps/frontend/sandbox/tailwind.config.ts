@@ -1,0 +1,1 @@
+// This file is intentionally left blank because its contents have been merged into next.config.js and it will be deleted.
