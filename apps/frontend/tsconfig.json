@@ -27,9 +27,6 @@
         "./src/*"
       ]
     },
-    "types": [
-      "@types/three"
-    ]
   },
   "include": [
     "next-env.d.ts",
