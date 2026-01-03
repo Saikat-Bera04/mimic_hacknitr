@@ -1,8 +1,16 @@
 import { Express, Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import { ConvexHttpClient } from "convex/browser";
 import { signJwt } from "../lib/jwt";
 
-const convexClient = (globalThis as any).convex;
+function getConvexClient() {
+  if (!(globalThis as any).convex) {
+    const url = process.env.CONVEX_URL;
+    if (!url) throw new Error("CONVEX_URL is not configured on the server");
+    (globalThis as any).convex = new ConvexHttpClient(url);
+  }
+  return (globalThis as any).convex;
+}
 
 export const authRoute = (app: Express) => {
   app.options("/api/auth/signup", (req: Request, res: Response) => {
@@ -23,7 +31,15 @@ export const authRoute = (app: Express) => {
         return res.status(400).json({ error: "email and password are required" });
       }
       const passwordHash = await bcrypt.hash(password, 10);
-      const created = await convexClient.mutation("auth.createUser", {
+      let convexClient;
+      try {
+        convexClient = getConvexClient();
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Server not configured for Convex" });
+      }
+
+      const created = await convexClient.mutation("auth:createUser", {
         email: email.toLowerCase(),
         userName: name,
         passwordHash,
@@ -54,7 +70,15 @@ export const authRoute = (app: Express) => {
       if (!email || !password) {
         return res.status(400).json({ error: "email and password are required" });
       }
-      const user = await convexClient.query("auth.findUserByEmail", { email: email.toLowerCase() });
+      let convexClient;
+      try {
+        convexClient = getConvexClient();
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Server not configured for Convex" });
+      }
+
+      const user = await convexClient.query("auth:findUserByEmail", { email: email.toLowerCase() });
       if (!user) return res.status(401).json({ error: "Invalid credentials" });
       const ok = await bcrypt.compare(password, user.passwordHash || "");
       if (!ok) return res.status(401).json({ error: "Invalid credentials" });
