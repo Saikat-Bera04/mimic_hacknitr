@@ -12,7 +12,7 @@ import { avatarChatRoute } from "./routes/avatarChat";
 import { trainerRoute } from "./routes/trainers";
 import { trainerMemoryRoute } from "./routes/trainerMemory";
 import { authRoute } from "./routes/auth";
-import { connectToMongo } from "./lib/mongo";
+// removed MongoDB connection; auth will use Convex
 
 // Initialize Convex globally
 if (!globalThis.convex && process.env.CONVEX_URL) {
@@ -42,15 +42,6 @@ app.get("/", (req, res) => {
 });
 
 async function start() {
-  // Connect to MongoDB if configured
-  try {
-    const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
-    const dbName = process.env.MONGO_DB || "stark";
-    await connectToMongo(uri, dbName);
-  } catch (e) {
-    console.warn("MongoDB not connected:", e);
-  }
-
   const port = process.env.PORT ? Number(process.env.PORT) : 8000;
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

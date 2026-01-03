@@ -9,6 +9,7 @@ export default defineSchema({
   users: defineTable({
     userName: v.string(),
     email: v.optional(v.string()),
+    passwordHash: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_email", ["email"]),
 
