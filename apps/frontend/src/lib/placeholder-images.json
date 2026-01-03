@@ -1,0 +1,182 @@
+{
+  "placeholderImages": [
+    {
+      "id": "about-section",
+      "description": "Abstract representation of digital connection and neural networks",
+      "imageUrl": "https://images.unsplash.com/photo-1738082956254-1dd63ad1db71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhYnN0cmFjdCUyMGNvbm5lY3Rpb258ZW58MHx8fHwxNzY2NjM4NzcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract connection"
+    },
+    {
+      "id": "auth-background",
+      "description": "Abstract background for authentication pages",
+      "imageUrl": "https://images.unsplash.com/photo-1622737133809-d95047b9e673?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhYnN0cmFjdCUyMGRhcmt8ZW58MHx8fHwxNzY2NTgzMjQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract dark"
+    },
+    {
+      "id": "user-avatar-1",
+      "description": "Profile picture for a user",
+      "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjY2MzIzOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "participant-avatar-1",
+      "description": "Profile picture for a participant",
+      "imageUrl": "https://images.unsplash.com/photo-1531123414780-f74242c2b052?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzY2NjMyMzk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "gallery-1",
+      "description": "Gallery image 1",
+      "imageUrl": "https://images.unsplash.com/photo-1610571098334-9110b5ae0fd9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMG5hdHVyZXxlbnwwfHx8fDE3NjY2NDA3NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract nature"
+    },
+    {
+      "id": "gallery-2",
+      "description": "Gallery image 2",
+      "imageUrl": "https://images.unsplash.com/photo-1462899006636-339e08d1844e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMGFydHxlbnwwfHx8fDE3NjY2MTQzODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract art"
+    },
+    {
+      "id": "gallery-3",
+      "description": "Gallery image 3",
+      "imageUrl": "https://images.unsplash.com/photo-1669295384050-a1d4357bd1d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhYnN0cmFjdCUyMHRlY2h8ZW58MHx8fHwxNzY2NjQwNzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract tech"
+    },
+    {
+      "id": "gallery-4",
+      "description": "Gallery image 4",
+      "imageUrl": "https://images.unsplash.com/photo-1541961017774-22349e4a1262?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMGFydHxlbnwwfHx8fDE3NjY2MTQzODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract art"
+    },
+    {
+      "id": "gallery-5",
+      "description": "Gallery image 5",
+      "imageUrl": "https://images.unsplash.com/photo-1561652723-f2f20a6h5b95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMHdhdGVyfGVufDB8fHx8MTc2NjY0MDc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract water"
+    },
+    {
+      "id": "gallery-6",
+      "description": "Gallery image 6",
+      "imageUrl": "https://images.unsplash.com/photo-1486551937199-baf066858de7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhYnN0cmFjdCUyMHRleHR1cmV8ZW58MHx8fHwxNzY2NjIxMjg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract texture"
+    },
+    {
+      "id": "gallery-7",
+      "description": "Gallery image 7",
+      "imageUrl": "https://images.unsplash.com/photo-1604076947037-d909e2f10fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMGxpZ2h0fGVufDB8fHx8MTc2NjY0MDc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract light"
+    },
+    {
+      "id": "gallery-8",
+      "description": "Gallery image 8",
+      "imageUrl": "https://images.unsplash.com/photo-1557264322-b44d383a2906?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHNwYWNlfGVufDB8fHx8MTc2NjUzOTc3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract space"
+    },
+    {
+      "id": "security-bot",
+      "description": "Abstract image for security bot",
+      "imageUrl": "/bot_greenprint.gif",
+      "imageHint": "wireframe robot"
+    },
+    {
+      "id": "avatar-1",
+      "imageUrl": "/avators/1.png",
+      "imageHint": "robot"
+    },
+    {
+      "id": "avatar-2",
+      "imageUrl": "/avators/2.png",
+      "imageHint": "astronaut"
+    },
+    {
+      "id": "avatar-3",
+      "imageUrl": "/avators/3.png",
+      "imageHint": "cyborg"
+    },
+    {
+      "id": "avatar-4",
+      "imageUrl": "/avators/4.png",
+      "imageHint": "ninja"
+    },
+    {
+      "id": "avatar-5",
+      "imageUrl": "/avators/5.png",
+      "imageHint": "wizard"
+    },
+    {
+      "id": "avatar-6",
+      "imageUrl": "/avators/6.png",
+      "imageHint": "explorer"
+    },
+    {
+      "id": "avatar-7",
+      "imageUrl": "/avators/7.png",
+      "imageHint": "golem"
+    },
+    {
+      "id": "avatar-8",
+      "imageUrl": "/avators/8.png",
+      "imageHint": "android"
+    },
+    {
+      "id": "avatar-9",
+      "imageUrl": "/avators/9.png",
+      "imageHint": "hacker"
+    },
+    {
+      "id": "avatar-10",
+      "imageUrl": "/avators/10.png",
+      "imageHint": "pilot"
+    },
+    {
+      "id": "avatar-11",
+      "imageUrl": "/avators/11.png",
+      "imageHint": "detective"
+    },
+    {
+      "id": "avatar-12",
+      "imageUrl": "/avators/12.png",
+      "imageHint": "scientist"
+    },
+    {
+      "id": "avatar-13",
+      "imageUrl": "/avators/13.png",
+      "imageHint": "artist"
+    },
+    {
+      "id": "avatar-14",
+      "imageUrl": "/avators/14.png",
+      "imageHint": "musician"
+    },
+    {
+      "id": "avatar-15",
+      "imageUrl": "/avators/15.png",
+      "imageHint": "writer"
+    },
+    {
+      "id": "avatar-16",
+      "imageUrl": "/avators/16.png",
+      "imageHint": "knight"
+    },
+    {
+      "id": "avatar-17",
+      "imageUrl": "/avators/17.png",
+      "imageHint": "mage"
+    },
+    {
+      "id": "avatar-18",
+      "imageUrl": "/avators/18.png",
+      "imageHint": "rogue"
+    },
+    {
+      "id": "avatar-19",
+      "imageUrl": "/avators/19.png",
+      "imageHint": "captain"
+    },
+    {
+      "id": "avatar-20",
+      "imageUrl": "/avators/20.png",
+      "imageHint": "cyberspace"
+    }
+  ]
+}
