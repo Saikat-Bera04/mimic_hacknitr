@@ -3,7 +3,7 @@
 Write your Convex functions here.
 See https://docs.convex.dev/functions for more.
 
-A query function that takes two arguments looks like
+A query function that takes two arguments looks like:
 
 ```ts
 // convex/myFunctions.ts
