@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "scripts": {
+    "dev": "bun --watch run index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@clerk/express": "^1.7.60",
+    "@google/genai": "^1.34.0",
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/adapter-libsql": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "convex": "^1.31.2",
+    "nodemon": "^3.1.11",
+    "prisma": "^7.2.0",
+    "typescript": "^5"
+  }
+}
