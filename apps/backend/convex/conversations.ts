@@ -151,3 +151,58 @@ export const getAvatarResponses = query({
       .take(limit);
   },
 });
+
+/* =========================
+   AVATAR FLOW (string avatarId) CONVERSATIONS
+   ========================= */
+
+// Upsert and append messages for avatar-flow chat sessions (string avatarId)
+export const appendFlowMessages = mutation({
+  args: {
+    avatarId: v.string(),
+    sessionId: v.string(),
+    newMessages: v.array(
+      v.object({
+        role: v.union(v.literal("user"), v.literal("assistant")),
+        content: v.string(),
+        timestamp: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("avatarFlowConversations")
+      .withIndex("by_sessionId", (q) => q.eq("sessionId", args.sessionId))
+      .first();
+
+    const now = Date.now();
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        messages: existing.messages.concat(args.newMessages),
+        updatedAt: now,
+      });
+      return existing._id;
+    }
+
+    return await ctx.db.insert("avatarFlowConversations", {
+      avatarId: args.avatarId,
+      sessionId: args.sessionId,
+      messages: args.newMessages,
+      createdAt: now,
+      updatedAt: now,
+    });
+  },
+});
+
+// Fetch conversation by sessionId (avatar-flow)
+export const getFlowConversation = query({
+  args: {
+    sessionId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("avatarFlowConversations")
+      .withIndex("by_sessionId", (q) => q.eq("sessionId", args.sessionId))
+      .first();
+  },
+});

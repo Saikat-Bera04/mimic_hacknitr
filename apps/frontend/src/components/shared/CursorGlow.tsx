@@ -36,7 +36,9 @@ export function CursorGlow() {
       style={{
         width: `${size.width}px`,
         height: `${size.height}px`,
-        transform: `translate(${position.x - size.width / 2}px, ${position.y - size.height / 2}px)`,
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        transform: `translate(-50%, -50%)`,
       }}
     />
   );

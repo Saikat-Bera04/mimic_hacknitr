@@ -1,30 +1,27 @@
-import { Header } from "@/components/shared/Header";
-import { Footer } from "@/components/shared/Footer";
-import { Hero } from "@/components/landing/Hero";
-import { AboutSection } from "@/components/landing/AboutSection";
-import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { Suspense } from "react";
-import { MacbookScrollDemo } from "@/components/landing/MacbookScroll";
-import { HeroParallaxDemo } from "@/components/landing/HeroParallaxDemo";
+import { Navbar } from "@/components/navbar"
+import { HeroSection } from "@/components/hero-section"
+import { AvatarShowcase } from "@/components/avatar-showcase"
+import { HowItWorks } from "@/components/how-it-works"
+import { FeatureGrid } from "@/components/feature-grid"
+import { AboutSection } from "@/components/about-section"
+import { PricingSection } from "@/components/pricing-section"
+import { GlitchMarquee } from "@/components/glitch-marquee"
+import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col relative bg-background">
-      <Suspense>
-        <Header />
-      </Suspense>
-      <main className="flex-1">
-        <Hero />
+    <div className="min-h-screen dot-grid-bg">
+      <Navbar />
+      <main>
+        <HeroSection />
+        <AvatarShowcase />
+        <HowItWorks />
+        <FeatureGrid />
         <AboutSection />
-        <div className="relative">
-          <MacbookScrollDemo />
-        </div>
-        <FeaturesSection />
-        <div className="relative">
-          <HeroParallaxDemo />
-        </div>
+        <PricingSection />
+        <GlitchMarquee />
       </main>
       <Footer />
     </div>
-  );
+  )
 }

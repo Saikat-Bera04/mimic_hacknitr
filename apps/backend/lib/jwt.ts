@@ -1,16 +1,18 @@
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error("JWT_SECRET environment variable is required");
+const JWT_EXPIRES_IN: string | number = process.env.JWT_EXPIRES_IN || "7d";
 
 export function signJwt(payload: object) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  const options: SignOptions = { expiresIn: JWT_EXPIRES_IN as SignOptions["expiresIn"] };
+  return jwt.sign(payload, JWT_SECRET!, options);
 }
 
-export function verifyJwt<T = any>(token: string): T | null {
+export function verifyJwt<T = unknown>(token: string): T | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as T;
-  } catch (e) {
+    return jwt.verify(token, JWT_SECRET!) as T;
+  } catch {
     return null;
   }
 }

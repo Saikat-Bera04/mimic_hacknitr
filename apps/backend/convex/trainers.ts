@@ -191,6 +191,7 @@ export const createTrainer = mutation({
       trainerId,
       systemPrompt: args.systemPrompt,
       contexts: [],
+      contextTexts: [],
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
@@ -260,5 +261,244 @@ export const updateTrainerSystemPrompt = mutation({
     }
 
     return { success: true, message: "Trainer system prompt updated" };
+  },
+});
+
+/* =========================
+   STORE AVATAR MASTER PROMPT (for avatar flow with string IDs)
+   ========================= */
+export const storeAvatarMasterPrompt = mutation({
+  args: {
+    avatarId: v.string(),           // Custom string ID from avatar flow
+    avatarName: v.string(),
+    avatarImageUrl: v.optional(v.string()),  // Selected avatar image URL
+    ownerId: v.string(),
+    ownerName: v.optional(v.string()),
+    ownerEmail: v.optional(v.string()),
+    masterPrompt: v.string(),
+    trainerName: v.optional(v.string()),
+    ownerResponses: v.optional(v.array(v.object({
+      question: v.string(),
+      answer: v.string(),
+    }))),
+    trainerResponses: v.optional(v.array(v.object({
+      question: v.string(),
+      answer: v.string(),
+      note: v.optional(v.string()),
+    }))),
+  },
+  async handler(ctx, args) {
+    // Check if master prompt already exists for this avatar
+    const existing = await ctx.db
+      .query("avatarMasterPrompts")
+      .withIndex("by_avatarId", (q) => q.eq("avatarId", args.avatarId))
+      .first();
+
+    if (existing) {
+      // Update existing record
+      await ctx.db.patch(existing._id, {
+        masterPrompt: args.masterPrompt,
+        trainerName: args.trainerName,
+        trainerResponses: args.trainerResponses,
+        updatedAt: Date.now(),
+      });
+      return { success: true, promptId: existing._id, updated: true };
+    }
+
+    // Create new record
+    const promptId = await ctx.db.insert("avatarMasterPrompts", {
+      avatarId: args.avatarId,
+      avatarName: args.avatarName,
+      avatarImageUrl: args.avatarImageUrl,
+      ownerId: args.ownerId,
+      ownerName: args.ownerName,
+      ownerEmail: args.ownerEmail,
+      masterPrompt: args.masterPrompt,
+      trainerName: args.trainerName,
+      ownerResponses: args.ownerResponses,
+      trainerResponses: args.trainerResponses,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    return { success: true, promptId, updated: false };
+  },
+});
+
+/* =========================
+   GET AVATAR MASTER PROMPT
+   ========================= */
+export const getAvatarMasterPrompt = query({
+  args: {
+    avatarId: v.string(),
+  },
+  async handler(ctx, args) {
+    const prompt = await ctx.db
+      .query("avatarMasterPrompts")
+      .withIndex("by_avatarId", (q) => q.eq("avatarId", args.avatarId))
+      .first();
+
+    return prompt;
+  },
+});
+
+/* =========================
+   GET ALL MASTER PROMPTS FOR OWNER
+   ========================= */
+export const getOwnerMasterPrompts = query({
+  args: {
+    ownerId: v.string(),
+  },
+  async handler(ctx, args) {
+    const prompts = await ctx.db
+      .query("avatarMasterPrompts")
+      .withIndex("by_ownerId", (q) => q.eq("ownerId", args.ownerId))
+      .collect();
+
+    return prompts;
+  },
+});
+
+/* =========================
+   SAVE TRAINING MEMORY (Text/Voice input)
+   Uses string avatarId for avatar flow compatibility
+   ========================= */
+export const saveTrainingMemory = mutation({
+  args: {
+    avatarId: v.string(),
+    text: v.string(),
+    embedding: v.array(v.number()),
+    category: v.optional(v.string()),
+    trustWeight: v.union(
+      v.literal("owner"),
+      v.literal("trainer"),
+      v.literal("derived")
+    ),
+    source: v.union(
+      v.literal("user_saved"),
+      v.literal("trainer_added"),
+      v.literal("voice_input"),
+      v.literal("conversation_extract")
+    ),
+    trainerId: v.optional(v.string()),
+  },
+  async handler(ctx, args) {
+    const memoryId = await ctx.db.insert("avatarTrainingMemories", {
+      avatarId: args.avatarId,
+      text: args.text,
+      embedding: args.embedding,
+      category: args.category,
+      trustWeight: args.trustWeight,
+      source: args.source,
+      trainerId: args.trainerId,
+      isActive: true,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    return { success: true, memoryId };
+  },
+});
+
+/* =========================
+   GET RELEVANT TRAINING MEMORIES (RAG)
+   Uses vector similarity + trust weight + recency
+   ========================= */
+export const getRelevantTrainingMemories = query({
+  args: {
+    avatarId: v.string(),
+    queryEmbedding: v.array(v.number()),
+    topK: v.optional(v.number()),
+  },
+  async handler(ctx, args) {
+    const topK = args.topK || 5;
+
+    // Get all active memories for this avatar
+    const memories = await ctx.db
+      .query("avatarTrainingMemories")
+      .withIndex("by_avatarId", (q) => q.eq("avatarId", args.avatarId))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .collect();
+
+    if (memories.length === 0) {
+      return [];
+    }
+
+    // Cosine similarity function
+    const cosineSimilarity = (a: number[], b: number[]) => {
+      if (!a || !b) return 0;
+      const len = Math.min(a.length, b.length);
+      if (len === 0) return 0;
+      let dot = 0;
+      let normA = 0;
+      let normB = 0;
+      for (let i = 0; i < len; i++) {
+        const ai = a[i] ?? 0;
+        const bi = b[i] ?? 0;
+        dot += ai * bi;
+        normA += ai * ai;
+        normB += bi * bi;
+      }
+      const denom = Math.sqrt(normA) * Math.sqrt(normB);
+      return denom ? dot / denom : 0;
+    };
+
+    // Trust weight multipliers
+    const trustWeights: Record<string, number> = { owner: 1.0, trainer: 0.7, derived: 0.5 };
+
+    // Recency boost (memories from last 30 days get bonus)
+    const now = Date.now();
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+
+    // Score memories
+    const scoredMemories = memories
+      .map((memory) => {
+        const similarityScore = cosineSimilarity(args.queryEmbedding, memory.embedding);
+        const trustMultiplier = trustWeights[memory.trustWeight] || 0.5;
+        const ageMs = now - memory.createdAt;
+        const recencyBoost = ageMs < thirtyDaysMs ? 1.0 + (thirtyDaysMs - ageMs) / thirtyDaysMs * 0.5 : 1.0;
+        const finalScore = similarityScore * trustMultiplier * recencyBoost;
+
+        return { ...memory, score: finalScore };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+
+    return scoredMemories;
+  },
+});
+
+/* =========================
+   GET ALL TRAINING MEMORIES FOR AVATAR
+   ========================= */
+export const getAvatarTrainingMemories = query({
+  args: {
+    avatarId: v.string(),
+  },
+  async handler(ctx, args) {
+    return await ctx.db
+      .query("avatarTrainingMemories")
+      .withIndex("by_avatarId", (q) => q.eq("avatarId", args.avatarId))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .order("desc")
+      .collect();
+  },
+});
+
+/* =========================
+   GET TRAINING MEMORY COUNT FOR AVATAR
+   ========================= */
+export const getTrainingMemoryCount = query({
+  args: {
+    avatarId: v.string(),
+  },
+  async handler(ctx, args) {
+    const memories = await ctx.db
+      .query("avatarTrainingMemories")
+      .withIndex("by_avatarId", (q) => q.eq("avatarId", args.avatarId))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .collect();
+
+    return memories.length;
   },
 });

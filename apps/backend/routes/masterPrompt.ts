@@ -1,5 +1,21 @@
 import { Express, Request, Response } from "express";
 
+interface AvatarDraft {
+  id: string;
+  avatarName: string;
+  ownerId: string;
+  ownerEmail: string;
+  ownerName?: string;
+  createdAt: number;
+  status: 'draft' | 'awaiting_trainer' | 'pending' | 'accepted' | 'completed';
+  ownerResponses: Array<{ question: string; answer: string }>;
+  draftPrompt: string;
+  trainerResponses?: Array<{ question: string; answer: string; note?: string }>;
+  finalMasterPrompt?: string;
+  completedAt?: number;
+  convexTrainerId?: string; // Add this field
+}
+
 export const masterPromptRoute = (app: Express) => {
   // CORS preflight for POST
   app.options("/api/master-prompt", (req: Request, res: Response) => {
@@ -66,7 +82,6 @@ export const masterPromptRoute = (app: Express) => {
   app.get("/api/master-prompt/:userId", async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
-
       if (!userId) {
         return res.status(400).json({
           error: "userId is required",
@@ -108,4 +123,42 @@ export const masterPromptRoute = (app: Express) => {
       });
     }
   });
+
+  // Helper function to save master prompt to Convex trainers table
+  async function saveToConvexTrainers(
+    trainerName: string,
+    masterPrompt: string,
+    ownerEmail: string,
+    avatarName: string
+  ): Promise<{ success: boolean; trainerId?: string; error?: string }> {
+    try {
+      const backendUrl = `http://localhost:${process.env.PORT || 8000}`;
+      
+      // Create or update trainer with the system prompt
+      const response = await fetch(`${backendUrl}/api/trainer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: trainerName || avatarName,
+          systemPrompt: masterPrompt,
+          description: `Avatar: ${avatarName} | Created by: ${ownerEmail}`,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error("Failed to save to trainers table:", data);
+        return { success: false, error: data.error || "Failed to save trainer" };
+      }
+
+      console.log("Saved master prompt to trainers table:", data);
+      return { success: true, trainerId: data.id || data.trainerId };
+    } catch (error: any) {
+      console.error("Error saving to trainers table:", error);
+      return { success: false, error: error.message };
+    }
+  }
 };

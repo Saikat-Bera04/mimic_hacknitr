@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { requireAuth } from "../lib/middleware";
+import { requireAuth} from "../lib/middleware";
 
 declare global {
   var convex: any;
@@ -43,7 +43,7 @@ export const trainerRoute = (app: any) => {
   app.post(
     "/api/trainers/:avatarId/invite",
     requireAuth,
-    async (req: Request, res: Response) => {
+    async (req:any, res: Response) => {
       try {
         const { avatarId } = req.params;
         const { invitedUserId } = req.body;

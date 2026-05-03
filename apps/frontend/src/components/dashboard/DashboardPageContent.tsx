@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -9,6 +8,7 @@ import { WelcomeDashboard } from './WelcomeDashboard';
 import { CreateAvatarPage } from './CreateAvatar';
 import { InviteParticipantPage } from './InviteParticipant';
 import { AvatarTraining } from './AvatarTraining';
+import { TrainingResultsPage } from './TrainingResults';
 
 export function DashboardPageContent() {
   const searchParams = useSearchParams();
@@ -26,12 +26,14 @@ export function DashboardPageContent() {
         return <ProfilePage />;
       case "invite":
         return <InviteParticipantPage />;
+      case "training-results":
+        return <TrainingResultsPage />;
       default:
         return <WelcomeDashboard />;
     }
   };
 
-  return <div className="w-full h-full flex items-start justify-center">{renderView()}</div>;
+  return <div className="w-full h-full flex items-start justify-center py-2 md:py-4">{renderView()}</div>;
 }
 
 

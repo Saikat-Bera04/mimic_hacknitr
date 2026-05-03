@@ -7,16 +7,17 @@ export default defineSchema({
      USERS (Avatar Owners)
      ========================= */
   users: defineTable({
+    clerkId: v.optional(v.string()),          // Clerk user ID (optional for migration)
     userName: v.string(),
     email: v.optional(v.string()),
-    passwordHash: v.optional(v.string()),
-    
+    passwordHash: v.optional(v.string()),     // Legacy field for migration
+    profilePhoto: v.optional(v.string()),
     createdAt: v.number(),
-  }).index("by_email", ["email"]),
+    updatedAt: v.optional(v.number()),
+  })
+    .index("by_email", ["email"])
+    .index("by_clerkId", ["clerkId"]),
 
-  /* =========================
-     AVATAR CONFIG (1:1 AI Avatar per User)
-     ========================= */
   avatars: defineTable({
     ownerId: v.id("users"),                    // Avatar owner
     avatarName: v.string(),                    // Avatar's name
@@ -80,6 +81,26 @@ export default defineSchema({
     .index("by_session", ["sessionId"]),
 
   /* =========================
+     AVATAR FLOW CONVERSATIONS (string avatarId)
+     Stores both user and assistant messages for avatar-flow chats
+     ========================= */
+  avatarFlowConversations: defineTable({
+    avatarId: v.string(),
+    sessionId: v.string(),
+    messages: v.array(
+      v.object({
+        role: v.union(v.literal("user"), v.literal("assistant")),
+        content: v.string(),
+        timestamp: v.number(),
+      })
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_avatarId", ["avatarId"])
+    .index("by_sessionId", ["sessionId"]),
+
+  /* =========================
      AVATAR RESPONSES (History & Analytics)
      ========================= */
   responses: defineTable({
@@ -141,8 +162,14 @@ export default defineSchema({
     systemPrompt: v.string(),
     contexts: v.array(
       v.object({
+        embedding: v.array(v.number()),  // Vector embedding only
+        createdAt: v.number(),
+      })
+    ),
+    contextTexts: v.array(
+      v.object({
         text: v.string(),
-        embedding: v.array(v.number()),
+        contextIndex: v.number(),  // Reference to corresponding context embedding
         createdAt: v.number(),
       })
     ),
@@ -150,4 +177,72 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_trainerId", ["trainerId"]),
+
+  /* =========================
+     AVATAR MASTER PROMPTS (Generated from Avatar Flow)
+     ========================= */
+  avatarMasterPrompts: defineTable({
+    avatarId: v.string(),             // Custom string ID from avatar flow
+    avatarName: v.string(),
+    avatarImageUrl: v.optional(v.string()),  // Selected avatar image URL
+    ownerId: v.string(),
+    ownerName: v.optional(v.string()),
+    ownerEmail: v.optional(v.string()),
+    masterPrompt: v.string(),
+    trainerName: v.optional(v.string()),
+    ownerResponses: v.optional(v.array(v.object({
+      question: v.string(),
+      answer: v.string(),
+    }))),
+    trainerResponses: v.optional(v.array(v.object({
+      question: v.string(),
+      answer: v.string(),
+      note: v.optional(v.string()),
+    }))),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_avatarId", ["avatarId"])
+    .index("by_ownerId", ["ownerId"]),
+
+  /* =========================
+     AVATAR TRAINING MEMORIES (Text/Voice inputs from trainers)
+     Uses string avatarId for avatar flow compatibility
+     ========================= */
+  avatarTrainingMemories: defineTable({
+    avatarId: v.string(),                     // String avatarId from avatar flow
+    text: v.string(),                          // Memory content
+    embedding: v.array(v.number()),            // Vector embedding for RAG
+    category: v.optional(v.string()),          // e.g., "personality", "preference", "fact"
+    trustWeight: v.union(
+      v.literal("owner"),
+      v.literal("trainer"),
+      v.literal("derived")
+    ),
+    source: v.union(
+      v.literal("user_saved"),
+      v.literal("trainer_added"),
+      v.literal("voice_input"),
+      v.literal("conversation_extract")
+    ),
+    trainerId: v.optional(v.string()),        // Who added this memory
+    isActive: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_avatarId", ["avatarId"])
+    .index("by_trust", ["trustWeight"])
+    .index("by_created", ["createdAt"]),
+
+  /* =========================
+     TRAINER ACCESS (Read-only tokens for trainers)
+     No authentication - just token-based view access
+     ========================= */
+  trainerAccess: defineTable({
+    avatarId: v.string(),                     // String avatarId from avatar flow
+    accessToken: v.string(),                  // Long-lived, unguessable token
+    createdAt: v.number(),
+  })
+    .index("by_token", ["accessToken"])
+    .index("by_avatarId", ["avatarId"]),
 });

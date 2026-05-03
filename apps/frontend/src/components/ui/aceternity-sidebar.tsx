@@ -14,6 +14,8 @@ import {
   Palette,
   Sparkles,
   Menu,
+  ClipboardList,
+  Cpu,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -24,6 +26,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import Image from 'next/image';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from './button';
+import { useClerk } from '@clerk/nextjs';
 
 interface SidebarLink {
   label: string;
@@ -47,10 +50,15 @@ const links: SidebarLink[] = [
     href: '/dashboard?view=create-avatar',
     icon: <Sparkles className="h-5 w-5 shrink-0" />,
   },
-   {
+  {
     label: 'Invite Participant',
     href: '/dashboard?view=invite',
     icon: <UserPlus className="h-5 w-5 shrink-0" />,
+  },
+  {
+    label: 'Training Results',
+    href: '/dashboard?view=training-results',
+    icon: <ClipboardList className="h-5 w-5 shrink-0" />,
   },
   {
     label: 'Docs',
@@ -67,23 +75,24 @@ interface SidebarDemoProps {
 export function SidebarDemo({ isMobileNavOpen, setIsMobileNavOpen }: SidebarDemoProps) {
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
+  const { signOut } = useClerk();
 
   const effectiveOpen = isMobile ? isMobileNavOpen : open;
   const setEffectiveOpen = isMobile ? setIsMobileNavOpen : setOpen;
 
   return (
-    <Sidebar open={effectiveOpen || false} setOpen={setEffectiveOpen || (() => {})} isMobile={isMobile}>
+    <Sidebar open={effectiveOpen || false} setOpen={setEffectiveOpen || (() => { })} isMobile={isMobile}>
       <SidebarBody className="justify-between gap-10">
         <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          {effectiveOpen ? <Logo /> : <LogoIcon />}
-          <div className="mt-8 flex flex-col gap-2">
+          {effectiveOpen ? <SidebarLogoFull /> : <LogoIcon />}
+          <div className="mt-8 flex flex-col gap-1">
             {links.map((link, idx) => (
-              <SidebarLink key={idx} link={link} open={effectiveOpen || false} />
+              <SidebarLinkItem key={idx} link={link} open={effectiveOpen || false} />
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <SidebarLink
+        <div className="flex flex-col gap-2 mt-auto pt-6 border-t-2 border-foreground/10">
+          <SidebarLinkItem
             link={{
               label: 'Profile',
               href: '/dashboard?view=profile',
@@ -91,31 +100,55 @@ export function SidebarDemo({ isMobileNavOpen, setIsMobileNavOpen }: SidebarDemo
             }}
             open={effectiveOpen || false}
           />
-           <SidebarLink
-            link={{
-              label: 'Sign Out',
-              href: '/signin',
-              icon: (
-                <Avatar className="h-7 w-7 shrink-0">
-                  <AvatarImage src="https://picsum.photos/seed/user1/200/200" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-              ),
-            }}
-            open={effectiveOpen || false}
-          />
+          <button
+            onClick={() => signOut({ redirectUrl: '/signin' })}
+            className={cn(
+              'group/link flex items-center justify-start gap-4 px-3 py-3 text-[11px] font-mono tracking-[0.2em] uppercase transition-all duration-200 border-2 border-transparent',
+              'text-muted-foreground hover:text-foreground hover:bg-foreground/5 hover:border-foreground/20'
+            )}
+          >
+            <div className="h-7 w-7 border-2 border-foreground bg-foreground/10 flex items-center justify-center shrink-0">
+              <ArrowLeft className="h-4 w-4" />
+            </div>
+            <AnimatePresence>
+              {effectiveOpen && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="whitespace-pre overflow-hidden"
+                >
+                  SIGN_OUT
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
         </div>
       </SidebarBody>
     </Sidebar>
   );
 }
+
+/* ── Full logo for expanded sidebar ── */
+function SidebarLogoFull() {
+  return (
+    <Link href="/" className="relative z-20 flex items-center gap-3 py-2 px-1">
+      <Cpu size={16} strokeWidth={1.5} className="text-foreground" />
+      <span className="text-xs font-mono tracking-[0.15em] uppercase font-bold text-foreground">
+        MIMIC
+      </span>
+    </Link>
+  );
+}
+
 export const LogoIcon = () => {
   return (
     <Link
       href="/"
       className="relative z-20 flex items-center justify-center py-1"
     >
-      <Image src="/mimic.png" alt="Mimic Logo" width={32} height={32} className="h-8 w-8" />
+      <Cpu size={20} strokeWidth={1.5} className="text-foreground" />
     </Link>
   );
 };
@@ -130,38 +163,38 @@ type SidebarProps = {
 export const Sidebar = ({ children, open, setOpen, isMobile }: SidebarProps) => {
   if (isMobile) {
     return (
-       <AnimatePresence>
+      <AnimatePresence>
         {open && (
-            <>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    onClick={() => setOpen(false)}
-                    className="fixed inset-0 bg-black/50 z-40"
-                />
-                <motion.div
-                    initial={{ x: '-100%' }}
-                    animate={{ x: 0 }}
-                    exit={{ x: '-100%' }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className={cn(
-                        'fixed top-0 left-0 h-full z-50 flex flex-col justify-between bg-neutral-900 p-5 w-[240px]'
-                    )}
-                >
-                    {children}
-                </motion.div>
-            </>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 bg-foreground/40 backdrop-blur-md z-40"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className={cn(
+                'fixed top-0 left-0 h-full z-50 flex flex-col justify-between bg-background border-r-4 border-foreground p-6 w-[280px]'
+              )}
+            >
+              {children}
+            </motion.div>
+          </>
         )}
-       </AnimatePresence>
+      </AnimatePresence>
     );
   }
 
   return (
     <motion.div
       animate={{
-        width: open ? '240px' : '80px',
+        width: open ? '260px' : '90px',
       }}
       transition={{
         type: 'spring',
@@ -171,7 +204,7 @@ export const Sidebar = ({ children, open, setOpen, isMobile }: SidebarProps) => 
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
       className={cn(
-        'relative z-20 flex h-full flex-col justify-between bg-neutral-900 p-5'
+        'relative z-20 flex h-full flex-col justify-between bg-background border-r-2 border-foreground p-6'
       )}
     >
       {children}
@@ -187,7 +220,7 @@ export const SidebarBody = (props: React.ComponentProps<'div'>) => {
   );
 };
 
-export const SidebarLink = ({ link, open }: { link: SidebarLink, open: boolean }) => {
+export const SidebarLinkItem = ({ link, open }: { link: SidebarLink, open: boolean }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isActive, setIsActive] = useState(false);
@@ -195,48 +228,54 @@ export const SidebarLink = ({ link, open }: { link: SidebarLink, open: boolean }
   useEffect(() => {
     const currentView = searchParams.get('view');
     if (link.href === '/dashboard' && !currentView && pathname === '/dashboard') {
-        setIsActive(true);
-        return;
+      setIsActive(true);
+      return;
     }
     if (link.href.includes('?view=')) {
-        const linkView = new URLSearchParams(link.href.split('?')[1]).get('view');
-        setIsActive(currentView === linkView);
+      const linkView = new URLSearchParams(link.href.split('?')[1]).get('view');
+      setIsActive(currentView === linkView);
     } else {
-        setIsActive(pathname === link.href && !link.href.includes('?'));
+      setIsActive(pathname === link.href && !link.href.includes('?'));
     }
-}, [pathname, searchParams, link.href]);
+  }, [pathname, searchParams, link.href]);
 
 
   return (
     <Link
       href={link.href}
       className={cn(
-        'group/link flex items-center justify-start gap-2 rounded-md px-2 py-2 text-sm text-neutral-200 hover:bg-neutral-700',
+        'group/link flex items-center justify-start gap-4 px-3 py-3 text-[11px] font-mono tracking-[0.2em] uppercase transition-all duration-200 border-2 border-transparent',
+        'text-muted-foreground hover:text-foreground hover:bg-foreground/5 hover:border-foreground/20',
         isActive &&
-          'bg-neutral-700 font-medium text-white'
+        'bg-foreground text-background font-bold border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-foreground hover:text-background translate-x-[-2px] translate-y-[-2px]'
       )}
     >
-      {React.cloneElement(link.icon as React.ReactElement, {
-        className: cn(
-          (link.icon as React.ReactElement).props.className,
-          'text-neutral-200',
-          isActive && 'text-white'
-        ),
-      })}
+      <div className="flex shrink-0 items-center justify-center">
+        {React.cloneElement(link.icon as React.ReactElement<{ className?: string }>, {
+          className: cn(
+            (link.icon as React.ReactElement<{ className?: string }>).props.className,
+            'h-5 w-5 transition-colors duration-200',
+            isActive ? 'text-background' : 'text-muted-foreground group-hover/link:text-foreground'
+          ),
+        })}
+      </div>
 
       <AnimatePresence>
         {open && (
-            <motion.span
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: 'auto' }}
-            exit={{ opacity: 0, width: 0 }}
+          <motion.span
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="font-medium whitespace-pre text-white overflow-hidden"
+            className="whitespace-pre overflow-hidden"
           >
-            {link.label}
+            {link.label.replace(" ", "_")}
           </motion.span>
         )}
       </AnimatePresence>
     </Link>
   );
 };
+
+// Keep backward compat export
+export { SidebarLinkItem as SidebarLink };

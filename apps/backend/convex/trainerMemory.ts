@@ -11,6 +11,7 @@ export const initializeMemory = mutation({
       trainerId: args.trainerId,
       systemPrompt: args.systemPrompt,
       contexts: [],
+      contextTexts: [],
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
@@ -35,7 +36,7 @@ export const generateEmbedding = action({
       }
       const ai = new GoogleGenAI({apiKey});
       const response = await ai.models.embedContent({
-        model: 'gemini-embedding-002',
+        model: 'gemini-embedding-001',
         contents: args.text,
     });
     
@@ -76,25 +77,37 @@ export const addContext = mutation({
       return { error: "Trainer memory not found" };
     }
 
-    // Add context with embedding to the array
+    // Add embedding to contexts array (embeddings only)
     const updatedContexts = [
       ...memory.contexts,
       {
-        text: args.contextText,
         embedding: args.embedding,
+        createdAt: Date.now(),
+      },
+    ];
+
+    // Add text to contextTexts array separately with index reference
+    const contextIndex = updatedContexts.length - 1;
+    const updatedContextTexts = [
+      ...memory.contextTexts,
+      {
+        text: args.contextText,
+        contextIndex: contextIndex,
         createdAt: Date.now(),
       },
     ];
 
     await ctx.db.patch(memory._id, {
       contexts: updatedContexts,
+      contextTexts: updatedContextTexts,
       updatedAt: Date.now(),
     });
 
     return { 
       success: true, 
       contextCount: updatedContexts.length,
-      message: "Context added with embedding successfully" 
+      textCount: updatedContextTexts.length,
+      message: "Context added with embedding successfully (embeddings and text separated)" 
     };
   },
 });

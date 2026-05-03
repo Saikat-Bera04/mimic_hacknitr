@@ -1,53 +1,77 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { KeyRound } from "lucide-react";
-import { ColorChangingDots } from "@/components/shared/ColorChangingDots";
+import { Brain, Database, MessageSquare, Shield } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip-card";
 
 const features = [
   {
-    icon: <ColorChangingDots />,
+    icon: <Brain className="w-5 h-5 text-primary" />,
     title: "Continuous Learning",
-    description: "Your avatar learns and evolves from every text and voice interaction, growing more personalized over time.",
+    description: "The clone learns and evolves from every text and voice interaction, growing more accurate over time.",
   },
   {
-    icon: <ColorChangingDots />,
+    icon: <Database className="w-5 h-5 text-primary" />,
     title: "Structured Memory",
     description: "Opinions, preferences, and behaviors are stored as structured memories, enabling complex and consistent personality traits.",
   },
   {
-    icon: <ColorChangingDots />,
+    icon: <MessageSquare className="w-5 h-5 text-primary" />,
     title: "Engaging Chat Interface",
-    description: "Converse with your avatar, provide feedback, and watch its personality unfold in a seamless chat experience.",
+    description: "Converse with the clone, provide feedback, and watch its personality unfold in a seamless chat experience.",
   },
   {
-    icon: <ColorChangingDots />,
+    icon: <Shield className="w-5 h-5 text-primary" />,
     title: "Privacy First",
-    description: "With a strict one-to-one training model, your digital identity is shaped only by those you trust. No crowdsourcing, no data leaks.",
+    description: "With a strict training model, the digital identity is shaped only by the memories you provide. No crowdsourcing, no data leaks.",
   },
 ];
 
-
 export function FeaturesSection() {
     return (
-        <section className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
-                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Key Features</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline" style={{color: 'var(--dynamic-text-color)'}}>A New Era of Digital Identity</h2>
-                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        EvoAvatar isn't just another chatbot. It's a suite of powerful, privacy-focused features designed to create a true digital extension of yourself.
+        <section className="w-full py-24 md:py-32 bg-background">
+            <div className="container px-4 md:px-6 mx-auto max-w-6xl">
+                <div className="flex flex-col items-start space-y-4 mb-16">
+                    <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl text-foreground">
+                        A New Era of Digital Cloning
+                    </h2>
+                    <p className="max-w-[680px] text-muted-foreground text-lg">
+                        MIMIC isn't just another chatbot. It's a suite of powerful, privacy-focused features designed to create a true digital clone of anyone you care about.
                     </p>
                 </div>
-                <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:max-w-none">
+                <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
                     {features.map((feature, index) => (
-                        <Card key={index} className="bg-background/50 hover:bg-background/80 transition-colors hover:shadow-lg hover:shadow-primary/10">
-                            <CardHeader className="flex flex-row items-start gap-4">
-                                <div className="h-8 w-8 flex items-center justify-center">{feature.icon}</div>
-                                <div className="grid gap-1">
-                                    <CardTitle className="font-headline" style={{color: 'var(--dynamic-text-color)'}}>{feature.title}</CardTitle>
-                                    <CardDescription className="text-muted-foreground">{feature.description}</CardDescription>
-                                </div>
-                            </CardHeader>
-                        </Card>
+                        <div 
+                            key={index} 
+                            className="group relative rounded-xl border border-border bg-card p-6 sm:p-8 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_4px_16px_rgba(0,0,0,0.5)] hover:border-border/80"
+                        >
+                            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/50 border border-border/50">
+                                {feature.icon}
+                            </div>
+                            <div className="mb-2 flex items-center gap-2">
+                                <h3 className="text-lg font-medium text-foreground">
+                                    {feature.title}
+                                </h3>
+                                {feature.title === "Privacy First" && (
+                                    <Tooltip
+                                        containerClassName="inline-flex"
+                                        content={
+                                            <div className="max-w-[220px] space-y-2">
+                                                <p className="text-sm font-semibold text-neutral-100">Private by design</p>
+                                                <p className="text-xs text-neutral-300 leading-relaxed">
+                                                    Only the memories you approve are used. No public training, no crowdsourced identity drift.
+                                                </p>
+                                            </div>
+                                        }
+                                    >
+                                        <span className="cursor-help rounded-full border border-border/60 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground">
+                                            Why?
+                                        </span>
+                                    </Tooltip>
+                                )}
+                            </div>
+                            <p className="text-sm leading-relaxed text-muted-foreground">
+                                {feature.description}
+                            </p>
+                        </div>
                     ))}
                 </div>
             </div>

@@ -4,14 +4,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
-  experimental: {
-    allowedDevOrigins: [
-      "https://*.cluster-wurh6gchdjcjmwrw2tqtufvhss.cloudworkstations.dev",
-    ],
-  },
   images: {
     remotePatterns: [
       {

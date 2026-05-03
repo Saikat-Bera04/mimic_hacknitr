@@ -35,16 +35,18 @@ const Badge = ({ className }: { className?: string }) => {
 
 export function MacbookScrollDemo() {
   return (
-    <div className="w-full overflow-hidden bg-background relative">
+    <div className="w-full overflow-hidden bg-background relative py-24">
       <MacbookScroll
         title={
-          <span>
-            This Macbook is built with TailwindCSS. <br /> No kidding.
+          <span className="text-3xl md:text-5xl font-semibold tracking-tight text-foreground">
+            Experience your avatar <br /> on any device.
           </span>
         }
         badge={
-          <Link href="https://github.com/google-gemini/studio-agent-nextjs-starter">
-            <Badge className="h-10 w-10 -rotate-12 transform" />
+          <Link href="/signup">
+            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg -rotate-12 transform shadow-lg">
+                M
+            </div>
           </Link>
         }
         src={`https://cdn.pixabay.com/video/2023/10/25/199827-879782482_large.mp4`}
