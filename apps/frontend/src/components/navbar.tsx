@@ -34,10 +34,10 @@ export function Navbar() {
 
           {/* Center nav links */}
           <div className="hidden md:flex items-center gap-10">
-            {["Platform", "Enterprise", "Resources", "Company"].map((link, i) => (
+            {["Platform", "Pricing", "Enterprise", "Resources", "Company"].map((link, i) => (
               <motion.a
                 key={link}
-                href="#"
+                href={link === "Pricing" ? "/pricing" : "#"}
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}

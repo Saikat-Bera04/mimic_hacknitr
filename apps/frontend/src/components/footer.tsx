@@ -23,10 +23,10 @@ export function Footer() {
           </span>
         </div>
         <div className="flex items-center gap-6">
-          {["Privacy", "Terms", "Status", "GitHub"].map((link, i) => (
+          {["Pricing", "Privacy", "Terms", "Status", "GitHub"].map((link, i) => (
             <motion.a
               key={link}
-              href="#"
+              href={link === "Pricing" ? "/pricing" : "#"}
               initial={{ opacity: 0, y: 6 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
